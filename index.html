@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -7,85 +8,73 @@
     <script src="script.js"></script>
     <meta name="viewport" content="initial-scale=1, user-scalable=no">
 </head>
-<body>
-<div class="container">
-    <div class="row">
-        <!-- only show this element when the user isnt on mobile -->
-        <h1 class="visible-md visible-lg" >Student Grade Table
-            <small class="pull-right">Grade Average : <span class="avgGrade  label label-default"> 0 </span></small>
-        </h1>
-        <!-- only show this element when the user gets to a mobile version -->
-        <h3 class="visible-xs visible-sm pull-left col-xs-12">Student Grade Table
-            <small class="col-xs-offset-4 pull-right">Grade Average : <span class="avgGrade label label-default"> 0 </span></small>
-        </h3>
-        <hr>
-    </div>
 
-    <div class="student-add-form col-lg-2 col-xs-12 pull-right">
-        <h4>Add Student</h4>
-        <div>
-            <div class="form-group">
-                <div class="input-group">
+<body>
+    <div class="container">
+        <div class="row">
+            <!-- only show this element when the user isnt on mobile -->
+            <h1 class="visible-md visible-lg">Student Grade Table
+                <small class="pull-right">Grade Average :
+                    <span class="avgGrade  label label-default"> 0 </span>
+                </small>
+            </h1>
+            <!-- only show this element when the user gets to a mobile version -->
+            <h3 class="visible-xs visible-sm pull-left col-xs-12">Student Grade Table
+                <small class="col-xs-offset-4 pull-right">Grade Average :
+                    <span class="avgGrade label label-default"> 0 </span>
+                </small>
+            </h3>
+            <hr>
+        </div>
+
+        <div class="student-add-form col-lg-3 col-xs-12 pull-right">
+            <h4>Add Student</h4>
+            <div>
+                <div class="form-group">
+                    <div class="input-group">
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-user"></span>
                         </span>
-                    <input type="text" class="form-control" name="studentName" id="studentName" placeholder="Student Name">
+                        <input type="text" class="form-control" name="studentName" id="studentName" placeholder="Student Name">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="form-group">
-            <div class="input-group">
+            <div class="form-group">
+                <div class="input-group">
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-list-alt"></span>
                     </span>
-                <input type="text" class="form-control" name="course" id="course" placeholder="Student Course">
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="input-group">
-                <div class="input-group-addon">
-                    <span class="">
-                        <span class="glyphicon glyphicon-education"></span>
-                    </span>
+                    <input type="text" class="form-control" name="course" id="course" placeholder="Student Course">
                 </div>
-                <input type="text" class="form-control" name="studentGrade" id="studentGrade" placeholder="Student Grade">
             </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <span class="">
+                            <span class="glyphicon glyphicon-education"></span>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" name="studentGrade" id="studentGrade" placeholder="Student Grade">
+                </div>
+            </div>
+            <button type="button" class="add btn btn-success" onclick="">Add</button>
+            <button type="button" class="cancel btn btn-default" onclick="">Cancel</button>
         </div>
-        <button type="button" class="btn btn-success" onclick="">Add</button>
-        <button type="button" class="btn btn-default" onclick="">Cancel</button>
+        <div class="student-list-container col-xs-12 col-lg-9">
+            <table class="student-list table table-hover">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Student Course</th>
+                        <th>Student Grade</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="student-list-container col-xs-12 col-lg-10">
-        <table class="student-list table table-hover">
-            <thead>
-            <tr>
-                <th>Student Name</th>
-                <th>Student Course</th>
-                <th>Student Grade</th>
-                <th>Operations</th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Eric Johnson</td>
-                    <td>Math</td>
-                    <td>80</td>
-                    <td><button type="button" class="btn btn-danger btn-sm">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>Daniel Paschal</td>
-                    <td>Science</td>
-                    <td>100</td>
-                    <td><button type="button" class="btn btn-danger btn-sm">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>Eric Johnson</td>
-                    <td>Science</td>
-                    <td>60</td>
-                    <td><button type="button" class="btn btn-danger btn-sm">Delete</button></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
 </body>
+
 </html>
