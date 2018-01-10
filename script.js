@@ -19,7 +19,6 @@ $(document).ready(initializeApp);
  * ];
  */
 var student_array = [];
-var counter = 0;
 var studentRowId = 0;
 /***************************************************************************************************
  * initializeApp
@@ -66,11 +65,18 @@ function handleCancelClick() {
  */
 function addStudent() {
   var studentObject = {};
+  var studentGrade = $("#studentGrade").val();
+
+  if (isNaN(studentGrade)) {
+    return;
+  } else {
+    studentObject.grade = studentGrade;
+  }
 
   studentObject.name = $("#studentName").val();
   studentObject.course = $("#course").val();
-  studentObject.grade = parseInt($("#studentGrade").val());
-  studentObject.id = studentRowId;
+
+  studentObject.id = ++studentRowId;
   student_array.push(studentObject);
   updateStudentList(student_array);
   clearAddStudentFormInputs();
@@ -89,7 +95,7 @@ function clearAddStudentFormInputs() {
  * @param {object} studentObj a single student object with course, name, and grade inside
  */
 function renderStudentOnDom(object) {
-  var newRow = $("<tr>").attr("id", studentRowId++);
+  var newRow = $("<tr>").attr("id", object.id);
   var deleteButton = $("<button>")
     .attr("type", "button")
     .addClass("delete btn btn-danger btn-sm")
@@ -110,9 +116,9 @@ function renderStudentOnDom(object) {
  * @calls renderStudentOnDom, calculateGradeAverage, renderGradeAverage
  */
 function updateStudentList(array) {
-  for (var arrayIndex = counter; arrayIndex < array.length; arrayIndex++) {
+  $("tbody").empty();
+  for (var arrayIndex = 0; arrayIndex < array.length; arrayIndex++) {
     renderStudentOnDom(array[arrayIndex]);
-    counter++;
   }
   renderGradeAverage(calculateGradeAverage(array));
 }
@@ -123,10 +129,15 @@ function updateStudentList(array) {
  */
 function calculateGradeAverage(array) {
   var number = 0;
+  var averageGrade;
   for (var studentIndex = 0; studentIndex < array.length; studentIndex++) {
-    number += array[studentIndex].grade;
+    number += parseInt(array[studentIndex].grade);
   }
-  var averageGrade = number / array.length;
+  if (array.length > 0) {
+    averageGrade = number / array.length;
+  } else {
+    averageGrade = 0;
+  }
   return averageGrade;
 }
 /***************************************************************************************************
@@ -162,11 +173,9 @@ function removeStudent(id) {
   ) {
     if (id === student_array[studentIndex].id) {
       student_array.splice(studentIndex, 1);
-    } else {
-      break;
+      removeStudentFromDom(id);
     }
   }
-  removeStudentFromDom(id);
 }
 
 function removeStudentFromDom(rowId) {
