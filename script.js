@@ -66,15 +66,23 @@ function handleCancelClick() {
 function addStudent() {
   var studentObject = {};
   var studentGrade = $("#studentGrade").val();
+  var studentName = $("#studentName").val();
+  var studentCourse = $("#course").val();
 
-  if (isNaN(studentGrade)) {
+  if (isNaN(studentGrade) || studentGrade === "") {
+    $(".student-grade").addClass("has-error");
     return;
   } else {
+    $(".student-grade").addClass("has-success");
     studentObject.grade = studentGrade;
   }
 
-  studentObject.name = $("#studentName").val();
-  studentObject.course = $("#course").val();
+  if (studentName === "" || studentCourse === "") {
+    return;
+  } else {
+    studentObject.name = studentName;
+    studentObject.course = studentCourse;
+  }
 
   studentObject.id = ++studentRowId;
   student_array.push(studentObject);
@@ -88,6 +96,7 @@ function clearAddStudentFormInputs() {
   $("#studentName").val("");
   $("#course").val("");
   $("#studentGrade").val("");
+  $(".student-grade").removeClass("has-success has-error");
 }
 /***************************************************************************************************
  * renderStudentOnDom - take in a student object, create html elements from the values and then append the elements
@@ -108,6 +117,7 @@ function renderStudentOnDom(object) {
 
   newRow.append(name, course, grade, button);
   $("tbody").append(newRow);
+  $(".student-grade").removeClass("has-success has-error");
 }
 /***************************************************************************************************
  * updateStudentList - centralized function to update the average and call student list update
