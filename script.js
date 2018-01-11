@@ -38,6 +38,7 @@ function addClickHandlersToElements() {
   $(".add").on("click", handleAddClicked);
   $(".cancel").on("click", handleCancelClick);
   $("tbody").on("click", ".delete", handleDeleteClicked);
+  $(".retrieve").on("click", handleGetDataClicked);
 }
 /***************************************************************************************************
  * handleAddClicked - Event Handler when user clicks the add button
@@ -148,7 +149,7 @@ function calculateGradeAverage(array) {
   } else {
     averageGrade = 0;
   }
-  return averageGrade;
+  return averageGrade.toFixed(2);
 }
 /***************************************************************************************************
  * renderGradeAverage - updates the on-page grade average
@@ -172,7 +173,7 @@ function handleDeleteClicked() {
 /* removeStudent - deletes a student object and deletes the object from global student array
 * @param {undefined} none
 * @return undefined
-* @calls updateStudentList
+* @calls removeStudentFromDom
 */
 function removeStudent(id) {
   id = parseInt(id);
@@ -187,8 +188,38 @@ function removeStudent(id) {
     }
   }
 }
-
+/***************************************************************************************************
+ * removeStudentFromDom - take in a student object, create html elements from the values and then removes the elements
+ * from the .student_list tbody
+ * @param {undefined} studentObj the row ID
+ * @calls renderGradeAverage and calculateGradeAverage
+ */
 function removeStudentFromDom(rowId) {
   $("#" + rowId).remove();
   renderGradeAverage(calculateGradeAverage(student_array));
+}
+
+function handleGetDataClicked() {
+  getStudentData("1CsqiXsXHF");
+}
+
+function getStudentData(key) {
+  var ajaxConfig = {
+    dataType: "json",
+    data: { api_key: key },
+    url: "http://s-apis.learningfuze.com/sgt/get",
+    method: "POST",
+    success: function(data) {
+      var studentDatabase = data;
+      for (
+        var studentIndex = 0;
+        studentIndex < studentDatabase.data.length;
+        studentIndex++
+      ) {
+        student_array.push(studentDatabase.data[studentIndex]);
+        updateStudentList(student_array);
+      }
+    }
+  };
+  $.ajax(ajaxConfig);
 }
