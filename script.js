@@ -19,7 +19,7 @@ $(document).ready(initializeApp);
  * ];
  */
 var student_array = [];
-var studentRowId = 0;
+// var studentRowId = 0;
 /***************************************************************************************************
  * initializeApp
  * @params {undefined} none
@@ -37,7 +37,7 @@ function initializeApp() {
 function addClickHandlersToElements() {
   $(".add").on("click", handleAddClicked);
   $(".cancel").on("click", handleCancelClick);
-  $("tbody").on("click", ".delete", handleDeleteClicked);
+  // $("tbody").on("click", ".delete", handleDeleteClicked);
   $(".retrieve").on("click", handleGetDataClicked);
 }
 /***************************************************************************************************
@@ -85,7 +85,7 @@ function addStudent() {
     studentObject.course = studentCourse;
   }
 
-  studentObject.id = ++studentRowId;
+  // studentObject.id = ++studentRowId;
   student_array.push(studentObject);
   updateStudentList(student_array);
   clearAddStudentFormInputs();
@@ -99,27 +99,27 @@ function clearAddStudentFormInputs() {
   $("#studentGrade").val("");
   $(".student-grade").removeClass("has-success has-error");
 }
-/***************************************************************************************************
- * renderStudentOnDom - take in a student object, create html elements from the values and then append the elements
- * into the .student_list tbody
- * @param {object} studentObj a single student object with course, name, and grade inside
- */
-function renderStudentOnDom(object) {
-  var newRow = $("<tr>").attr("id", object.id);
-  var deleteButton = $("<button>")
-    .attr("type", "button")
-    .addClass("delete btn btn-danger btn-sm")
-    .text("Delete");
+// /***************************************************************************************************
+//  * renderStudentOnDom - take in a student object, create html elements from the values and then append the elements
+//  * into the .student_list tbody
+//  * @param {object} studentObj a single student object with course, name, and grade inside
+//  */
+// function renderStudentOnDom(object) {
+//   var newRow = $("<tr>").attr("id", object.id);
+//   var deleteButton = $("<button>")
+//     .attr("type", "button")
+//     .addClass("delete btn btn-danger btn-sm")
+//     .text("Delete");
 
-  var name = $("<td>").text(object.name);
-  var course = $("<td>").text(object.course);
-  var grade = $("<td>").text(object.grade);
-  var button = $("<td>").append(deleteButton);
+//   var name = $("<td>").text(object.name);
+//   var course = $("<td>").text(object.course);
+//   var grade = $("<td>").text(object.grade);
+//   var button = $("<td>").append(deleteButton);
 
-  newRow.append(name, course, grade, button);
-  $("tbody").append(newRow);
-  $(".student-grade").removeClass("has-success has-error");
-}
+//   newRow.append(name, course, grade, button);
+//   $("tbody").append(newRow);
+//   $(".student-grade").removeClass("has-success has-error");
+// }
 /***************************************************************************************************
  * updateStudentList - centralized function to update the average and call student list update
  * @param students {array} the array of student objects
@@ -129,7 +129,32 @@ function renderStudentOnDom(object) {
 function updateStudentList(array) {
   $("tbody").empty();
   for (var arrayIndex = 0; arrayIndex < array.length; arrayIndex++) {
-    renderStudentOnDom(array[arrayIndex]);
+    // renderStudentOnDom(array[arrayIndex]);
+    (function() {
+      var student = array[arrayIndex];
+      var newRow = $("<tr>").attr("id", student.id);
+      var name = $("<td>").text(student.name);
+      var course = $("<td>").text(student.course);
+      var grade = $("<td>").text(student.grade);
+      
+      var deleteButton = $("<button>", {
+        type: "button",
+        class: "delete btn btn-danger btn-sm",
+        text: "Delete",
+        on: {
+          click: function(){
+            var parentRow = $(this).parents("tr");
+            student_array.splice(student,1);
+            parentRow.remove();
+            renderGradeAverage(calculateGradeAverage(array))
+          }
+        }
+      })
+      var button = $("<td>").append(deleteButton);
+      newRow.append(name, course, grade, button);
+      $("tbody").append(newRow);
+      $(".student-grade").removeClass("has-success has-error");
+    })(arrayIndex);
   }
   renderGradeAverage(calculateGradeAverage(array));
 }
@@ -160,44 +185,44 @@ function renderGradeAverage(number) {
   $(".avgGrade").text(number);
 }
 
-/***************************************************************************************************
- * handleDeleteClicked - Event Handler when user clicks the delete button, should delete out student data
- * @param: {undefined} none
- * @returns: {undefined} none
- * @calls: removeStudent
- */
-function handleDeleteClicked() {
-  var parentRow = $(this).parents("tr");
-  removeStudent(parentRow.attr("id"));
-}
-/* removeStudent - deletes a student object and deletes the object from global student array
-* @param {undefined} none
-* @return undefined
-* @calls removeStudentFromDom
-*/
-function removeStudent(id) {
-  id = parseInt(id);
-  for (
-    var studentIndex = 0;
-    studentIndex < student_array.length;
-    studentIndex++
-  ) {
-    if (id === student_array[studentIndex].id) {
-      student_array.splice(studentIndex, 1);
-      removeStudentFromDom(id);
-    }
-  }
-}
-/***************************************************************************************************
- * removeStudentFromDom - take in a student object, create html elements from the values and then removes the elements
- * from the .student_list tbody
- * @param {undefined} studentObj the row ID
- * @calls renderGradeAverage and calculateGradeAverage
- */
-function removeStudentFromDom(rowId) {
-  $("#" + rowId).remove();
-  renderGradeAverage(calculateGradeAverage(student_array));
-}
+// /***************************************************************************************************
+//  * handleDeleteClicked - Event Handler when user clicks the delete button, should delete out student data
+//  * @param: {undefined} none
+//  * @returns: {undefined} none
+//  * @calls: removeStudent
+//  */
+// function handleDeleteClicked() {
+//   var parentRow = $(this).parents("tr");
+//   removeStudent(parentRow.attr("id"));
+// }
+// /* removeStudent - deletes a student object and deletes the object from global student array
+// * @param {undefined} none
+// * @return undefined
+// * @calls removeStudentFromDom
+// */
+// function removeStudent(id) {
+//   id = parseInt(id);
+//   for (
+//     var studentIndex = 0;
+//     studentIndex < student_array.length;
+//     studentIndex++
+//   ) {
+//     if (id === student_array[studentIndex].id) {
+//       student_array.splice(studentIndex, 1);
+//       removeStudentFromDom(id);
+//     }
+//   }
+// }
+// /***************************************************************************************************
+//  * removeStudentFromDom - take in a student object, create html elements from the values and then removes the elements
+//  * from the .student_list tbody
+//  * @param {undefined} studentObj the row ID
+//  * @calls renderGradeAverage and calculateGradeAverage
+//  */
+// function removeStudentFromDom(rowId) {
+//   $("#" + rowId).remove();
+//   renderGradeAverage(calculateGradeAverage(student_array));
+// }
 
 function handleGetDataClicked() {
   getStudentData("1CsqiXsXHF");
@@ -223,3 +248,4 @@ function getStudentData(key) {
   };
   $.ajax(ajaxConfig);
 }
+  
