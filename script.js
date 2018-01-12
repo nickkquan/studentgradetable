@@ -84,7 +84,7 @@ function addStudent() {
     studentObject.name = studentName;
     studentObject.course = studentCourse;
   }
-
+  addStudentData("1CsqiXsXHF")
   // studentObject.id = ++studentRowId;
   student_array.push(studentObject);
   updateStudentList(student_array);
@@ -244,8 +244,21 @@ function getStudentData(key) {
         student_array.push(studentDatabase.data[studentIndex]);
         updateStudentList(student_array);
       }
+      // console.log(data)
     }
   };
   $.ajax(ajaxConfig);
 }
-  
+
+function addStudentData(key){
+  var ajaxConfig = {
+    dataType: "json",
+    data: { api_key: key},
+    url: "http://s-apis.learningfuze.com/sgt/create",
+    method: "POST",
+    success: function() {
+      console.log('true')
+    }
+  }
+  $.ajax(ajaxConfig);
+}
