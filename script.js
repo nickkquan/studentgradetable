@@ -28,6 +28,7 @@ var student_array = [];
  */
 function initializeApp() {
   addClickHandlersToElements();
+  getStudentData();
 }
 /***************************************************************************************************
  * addClickHandlerstoElements
@@ -37,7 +38,6 @@ function initializeApp() {
 function addClickHandlersToElements() {
   $(".add").on("click", handleAddClicked);
   $(".cancel").on("click", handleCancelClick);
-  // $("tbody").on("click", ".delete", handleDeleteClicked);
   $(".retrieve").on("click", handleGetDataClicked);
 }
 /***************************************************************************************************
@@ -68,58 +68,59 @@ function addStudent() {
   var studentObject = {};
   var studentGrade = $("#studentGrade").val();
   var studentName = $("#studentName").val();
-  var studentCourse = $("#course").val();
+  var studentCourse = $("#studentCourse").val();
+  var isValid = true;
 
-  if (isNaN(studentGrade) || studentGrade === "") {
-    $(".student-grade").addClass("has-error");
-    return;
+  if (studentName.length < 2 || studentName === "") {
+    $(".student-name").addClass("has-error");
+    isValid = false;
   } else {
+    $(".student-name").removeClass("has-error");
+    $(".student-name").addClass("has-success");
+    studentObject.name = studentName;
+  }
+
+  if (studentCourse.length < 2 || studentCourse === "") {
+    $(".student-course").addClass("has-error");
+    isValid = false;
+  } else {
+    $(".student-course").removeClass("has-error");
+    $(".student-course").addClass("has-success");
+    studentObject.course = studentCourse;
+  }
+
+  if (
+    isNaN(studentGrade) ||
+    studentGrade === "" ||
+    studentGrade < 0 ||
+    studentGrade > 100
+  ) {
+    $(".student-grade").addClass("has-error");
+    isValid = false;
+  } else {
+    $(".student-grade").removeClass("has-error");
     $(".student-grade").addClass("has-success");
     studentObject.grade = studentGrade;
   }
 
-  if (studentName === "" || studentCourse === "") {
-    return;
-  } else {
-    studentObject.name = studentName;
-    studentObject.course = studentCourse;
+  if (isValid) {
+    student_array.push(studentObject);
+    addStudentData(studentObject);
+    updateStudentList(student_array);
+    clearAddStudentFormInputs();
   }
-  addStudentData("1CsqiXsXHF")
-  // studentObject.id = ++studentRowId;
-  student_array.push(studentObject);
-  updateStudentList(student_array);
-  clearAddStudentFormInputs();
 }
 /***************************************************************************************************
  * clearAddStudentForm - clears out the form values based on inputIds variable
  */
 function clearAddStudentFormInputs() {
   $("#studentName").val("");
-  $("#course").val("");
+  $("#studentCourse").val("");
   $("#studentGrade").val("");
-  $(".student-grade").removeClass("has-success has-error");
+  $(".student-grade, .student-name, .student-course").removeClass(
+    "has-success has-error"
+  );
 }
-// /***************************************************************************************************
-//  * renderStudentOnDom - take in a student object, create html elements from the values and then append the elements
-//  * into the .student_list tbody
-//  * @param {object} studentObj a single student object with course, name, and grade inside
-//  */
-// function renderStudentOnDom(object) {
-//   var newRow = $("<tr>").attr("id", object.id);
-//   var deleteButton = $("<button>")
-//     .attr("type", "button")
-//     .addClass("delete btn btn-danger btn-sm")
-//     .text("Delete");
-
-//   var name = $("<td>").text(object.name);
-//   var course = $("<td>").text(object.course);
-//   var grade = $("<td>").text(object.grade);
-//   var button = $("<td>").append(deleteButton);
-
-//   newRow.append(name, course, grade, button);
-//   $("tbody").append(newRow);
-//   $(".student-grade").removeClass("has-success has-error");
-// }
 /***************************************************************************************************
  * updateStudentList - centralized function to update the average and call student list update
  * @param students {array} the array of student objects
@@ -136,25 +137,26 @@ function updateStudentList(array) {
       var name = $("<td>").text(student.name);
       var course = $("<td>").text(student.course);
       var grade = $("<td>").text(student.grade);
-      
+
       var deleteButton = $("<button>", {
         type: "button",
         class: "delete btn btn-danger btn-sm",
         text: "Delete",
         on: {
-          click: function(){
+          click: function() {
             var parentRow = $(this).parents("tr");
-            student_array.splice(student,1);
+            student_array.splice(student, 1);
             parentRow.remove();
-            renderGradeAverage(calculateGradeAverage(array))
+            deleteStudentData(student);
+            renderGradeAverage(calculateGradeAverage(array));
           }
         }
-      })
+      });
       var button = $("<td>").append(deleteButton);
       newRow.append(name, course, grade, button);
       $("tbody").append(newRow);
       $(".student-grade").removeClass("has-success has-error");
-    })(arrayIndex);
+    })();
   }
   renderGradeAverage(calculateGradeAverage(array));
 }
@@ -185,53 +187,14 @@ function renderGradeAverage(number) {
   $(".avgGrade").text(number);
 }
 
-// /***************************************************************************************************
-//  * handleDeleteClicked - Event Handler when user clicks the delete button, should delete out student data
-//  * @param: {undefined} none
-//  * @returns: {undefined} none
-//  * @calls: removeStudent
-//  */
-// function handleDeleteClicked() {
-//   var parentRow = $(this).parents("tr");
-//   removeStudent(parentRow.attr("id"));
-// }
-// /* removeStudent - deletes a student object and deletes the object from global student array
-// * @param {undefined} none
-// * @return undefined
-// * @calls removeStudentFromDom
-// */
-// function removeStudent(id) {
-//   id = parseInt(id);
-//   for (
-//     var studentIndex = 0;
-//     studentIndex < student_array.length;
-//     studentIndex++
-//   ) {
-//     if (id === student_array[studentIndex].id) {
-//       student_array.splice(studentIndex, 1);
-//       removeStudentFromDom(id);
-//     }
-//   }
-// }
-// /***************************************************************************************************
-//  * removeStudentFromDom - take in a student object, create html elements from the values and then removes the elements
-//  * from the .student_list tbody
-//  * @param {undefined} studentObj the row ID
-//  * @calls renderGradeAverage and calculateGradeAverage
-//  */
-// function removeStudentFromDom(rowId) {
-//   $("#" + rowId).remove();
-//   renderGradeAverage(calculateGradeAverage(student_array));
-// }
-
 function handleGetDataClicked() {
-  getStudentData("1CsqiXsXHF");
+  getStudentData();
 }
 
-function getStudentData(key) {
+function getStudentData() {
   var ajaxConfig = {
     dataType: "json",
-    data: { api_key: key },
+    data: { api_key: "1CsqiXsXHF" },
     url: "http://s-apis.learningfuze.com/sgt/get",
     method: "POST",
     success: function(data) {
@@ -242,23 +205,50 @@ function getStudentData(key) {
         studentIndex++
       ) {
         student_array.push(studentDatabase.data[studentIndex]);
-        updateStudentList(student_array);
       }
-      // console.log(data)
+      updateStudentList(student_array);
     }
   };
   $.ajax(ajaxConfig);
 }
 
-function addStudentData(key){
+function addStudentData(student) {
   var ajaxConfig = {
     dataType: "json",
-    data: { api_key: key},
+    data: {
+      api_key: "1CsqiXsXHF",
+      name: student.name,
+      grade: student.grade,
+      course: student.course
+    },
     url: "http://s-apis.learningfuze.com/sgt/create",
     method: "POST",
-    success: function() {
-      console.log('true')
+    success: function(response) {
+      if (response.success === true) {
+        updateStudentList(student_array);
+        student.id = response.new_id;
+      }
     }
-  }
+  };
+  $.ajax(ajaxConfig);
+}
+
+function deleteStudentData(student) {
+  var ajaxConfig = {
+    dataType: "json",
+    data: {
+      api_key: "1CsqiXsXHF",
+      student_id: student.id
+    },
+    url: "http://s-apis.learningfuze.com/sgt/delete",
+    method: "POST",
+    success: function(response) {
+      if (response.success === true) {
+        console.log(response.success);
+      } else {
+        console.log(response.errors);
+      }
+    }
+  };
   $.ajax(ajaxConfig);
 }
