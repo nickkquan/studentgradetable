@@ -19,7 +19,6 @@ $(document).ready(initializeApp);
  * ];
  */
 var student_array = [];
-// var studentRowId = 0;
 /***************************************************************************************************
  * initializeApp
  * @params {undefined} none
@@ -29,6 +28,7 @@ var student_array = [];
 function initializeApp() {
   addClickHandlersToElements();
   getStudentData();
+  handleFormInputs();
 }
 /***************************************************************************************************
  * addClickHandlerstoElements
@@ -36,7 +36,7 @@ function initializeApp() {
  * @returns  {undefined}
  */
 function addClickHandlersToElements() {
-  $(".add").on("click", handleAddClicked);
+  $(".add").on("click", addStudent);
   $(".cancel").on("click", handleCancelClick);
   $(".retrieve").on("click", handleGetDataClicked);
 }
@@ -58,6 +58,40 @@ function handleAddClicked() {
 function handleCancelClick() {
   clearAddStudentFormInputs();
 }
+/***************************************************************************************************/
+function handleFormInputs() {
+  $("#studentName, #studentCourse, #studentGrade").keyup(checkFormEntry);
+}
+
+function checkFormEntry() {
+  if ($("#studentName").val().length < 2) {
+    $(".student-name").addClass("has-error");
+    $(".student-icon").popover("show");
+  } else {
+    $(".student-name").removeClass("has-error");
+    $(".student-name").addClass("has-success");
+    $(".student-icon").popover("hide");
+  }
+
+  if ($("#studentCourse").val().length < 2) {
+    $(".student-course").addClass("has-error");
+    $(".course-icon").popover("show");
+  } else {
+    $(".student-course").removeClass("has-error");
+    $(".student-course").addClass("has-success");
+    $(".course-icon").popover("hide");
+  }
+
+  if ($("#studentGrade").val() === "" || isNaN($("#studentGrade").val())) {
+    $(".student-grade").addClass("has-error");
+    $(".grade-icon").popover("show");
+  } else {
+    $(".student-grade").removeClass("has-error");
+    $(".student-grade").addClass("has-success");
+    $(".grade-icon").popover("hide");
+  }
+}
+
 /***************************************************************************************************
  * addStudent - creates a student objects based on input fields in the form and adds the object to global student array
  * @param {undefined} none
@@ -73,19 +107,23 @@ function addStudent() {
 
   if (studentName.length < 2 || studentName === "") {
     $(".student-name").addClass("has-error");
+    $(".student-icon").popover("show");
     isValid = false;
   } else {
     $(".student-name").removeClass("has-error");
     $(".student-name").addClass("has-success");
+    $(".student-icon").popover("hide");
     studentObject.name = studentName;
   }
 
   if (studentCourse.length < 2 || studentCourse === "") {
     $(".student-course").addClass("has-error");
+    $(".course-icon").popover("show");
     isValid = false;
   } else {
     $(".student-course").removeClass("has-error");
     $(".student-course").addClass("has-success");
+    $(".course-icon").popover("hide");
     studentObject.course = studentCourse;
   }
 
@@ -96,15 +134,17 @@ function addStudent() {
     studentGrade > 100
   ) {
     $(".student-grade").addClass("has-error");
+    $(".grade-icon").popover("show");
     isValid = false;
   } else {
     $(".student-grade").removeClass("has-error");
     $(".student-grade").addClass("has-success");
+    $(".grade-icon").popover("hide");
     studentObject.grade = studentGrade;
   }
 
   if (isValid) {
-    student_array.push(studentObject);
+    // student_array.push(studentObject);
     addStudentData(studentObject);
     updateStudentList(student_array);
     clearAddStudentFormInputs();
@@ -120,6 +160,7 @@ function clearAddStudentFormInputs() {
   $(".student-grade, .student-name, .student-course").removeClass(
     "has-success has-error"
   );
+  $(".student-icon, .course-icon, .grade-icon").popover("hide");
 }
 /***************************************************************************************************
  * updateStudentList - centralized function to update the average and call student list update
@@ -130,7 +171,6 @@ function clearAddStudentFormInputs() {
 function updateStudentList(array) {
   $("tbody").empty();
   for (var arrayIndex = 0; arrayIndex < array.length; arrayIndex++) {
-    // renderStudentOnDom(array[arrayIndex]);
     (function() {
       var student = array[arrayIndex];
       var newRow = $("<tr>").attr("id", student.id);
@@ -146,8 +186,8 @@ function updateStudentList(array) {
           click: function() {
             var parentRow = $(this).parents("tr");
             student_array.splice(student, 1);
-            parentRow.remove();
-            deleteStudentData(student);
+            // parentRow.remove();
+            deleteStudentData(student, parentRow);
             renderGradeAverage(calculateGradeAverage(array));
           }
         }
@@ -188,6 +228,7 @@ function renderGradeAverage(number) {
 }
 
 function handleGetDataClicked() {
+  student_array = [];
   getStudentData();
 }
 
@@ -225,15 +266,23 @@ function addStudentData(student) {
     method: "POST",
     success: function(response) {
       if (response.success === true) {
-        updateStudentList(student_array);
         student.id = response.new_id;
+        student_array.push(student);
+        updateStudentList(student_array);
+      } else {
+        $(".error-message").text(response.error[0]);
+        $("#error-modal").modal("show");
       }
+    },
+    error: function(error) {
+      $(".error-message").text(error.statusText);
+      $("#error-modal").modal("show");
     }
   };
   $.ajax(ajaxConfig);
 }
 
-function deleteStudentData(student) {
+function deleteStudentData(student, element) {
   var ajaxConfig = {
     dataType: "json",
     data: {
@@ -242,13 +291,22 @@ function deleteStudentData(student) {
     },
     url: "http://s-apis.learningfuze.com/sgt/delete",
     method: "POST",
-    success: function(response) {
-      if (response.success === true) {
-        console.log(response.success);
-      } else {
-        console.log(response.errors);
-      }
+    success: deleteStudentSuccess.bind(null, element),
+    error: function(error) {
+      $(".error-message").text(error.statusText);
+      $("#error-modal").modal("show");
     }
   };
   $.ajax(ajaxConfig);
+}
+
+// Function deletes student from DOM element upon success response from server.
+function deleteStudentSuccess(element, response) {
+  if (response.success === true) {
+    element.remove();
+    console.log(response.success);
+  } else {
+    $(".error-message").text(response.errors[0]);
+    $("#error-modal").modal("show");
+  }
 }
