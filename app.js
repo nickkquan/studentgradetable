@@ -72,11 +72,13 @@ app.post("/students/create", (req, res) => {
 
 // app.get("/students/update", (req, res) => {});
 
-app.delete("/students/delete", (req, res) => {
+app.post("/students/delete", (req, res) => {
 	let { student_id } = req.body;
+	// let { student_id } = req.params; <-- This line will be used for a route along the lines of:
+	// app.post("/students/delete/:student_id", (req, res) => {
 
-	let sql = "DELETE FROM ?? WHERE ?";
-	let inserts = ["students", student_id];
+	let sql = "DELETE FROM ?? WHERE ?? = ?";
+	let inserts = ["students", "student_id", student_id];
 
 	let query = mysql.format(sql, inserts);
 	console.log("this is the query", query);
