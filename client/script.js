@@ -264,7 +264,6 @@ function updateStudentList(array) {
 					click: function() {
 						var parentRow = $(this).parents("tr");
 						student_array.splice(student, 1);
-						// parentRow.remove();
 						deleteStudentData(student, parentRow);
 						renderGradeAverage(calculateGradeAverage(array));
 					}
