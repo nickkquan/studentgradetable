@@ -21,7 +21,7 @@ $(document).ready(initializeApp);
 var student_array = [];
 /***************************************************************************************************
  * initializeApp
- * @params {undefined} none
+ * @params: {undefined} none
  * @returns: {undefined} none
  * initializes the application, including adding click handlers and pulling in any data from the server, in later versions
  */
@@ -32,8 +32,8 @@ function initializeApp() {
 }
 /***************************************************************************************************
  * addClickHandlerstoElements
- * @params {undefined}
- * @returns  {undefined}
+ * @params: {undefined}
+ * @returns: {undefined}
  */
 function addClickHandlersToElements() {
 	$(".add").on("click", addStudent);
@@ -42,9 +42,9 @@ function addClickHandlersToElements() {
 }
 /***************************************************************************************************
  * handleAddClicked - Event Handler when user clicks the add button
- * @param {object} event  The event object from the click
- * @return: 
-       none
+ * @param: {object} event  The event object from the click
+ * @return: none
+ * @calls: addStudent
  */
 function handleAddClicked() {
 	addStudent();
@@ -58,7 +58,11 @@ function handleAddClicked() {
 function handleCancelClick() {
 	clearAddStudentFormInputs();
 }
-/***************************************************************************************************/
+/***************************************************************************************************
+ * handleFormInputs - Event Handler that checks input fields to ensure valid entry
+ * @param: {undefined} none
+ * @returns: {undefined} none
+ */
 function handleFormInputs() {
 	$("#studentName, #studentCourse, #studentGrade").keyup(checkFormEntry);
 }
@@ -94,9 +98,9 @@ function checkFormEntry() {
 
 /***************************************************************************************************
  * addStudent - creates a student objects based on input fields in the form and adds the object to global student array
- * @param {undefined} none
- * @return undefined
- * @calls clearAddStudentFormInputs, updateStudentList
+ * @param: {undefined} none
+ * @return: undefined
+ * @calls: clearAddStudentFormInputs, updateStudentList
  */
 function addStudent() {
 	var studentObject = {};
@@ -147,6 +151,8 @@ function addStudent() {
 }
 /***************************************************************************************************
  * clearAddStudentForm - clears out the form values based on inputIds variable
+ * @param: none
+ * @return: undefined
  */
 function clearAddStudentFormInputs() {
 	$("#studentName").val("");
@@ -157,9 +163,9 @@ function clearAddStudentFormInputs() {
 }
 /***************************************************************************************************
  * updateStudentList - centralized function to update the average and call student list update
- * @param students {array} the array of student objects
- * @returns {undefined} none
- * @calls renderStudentOnDom, calculateGradeAverage, renderGradeAverage
+ * @param: students {array} the array of student objects
+ * @returns: {undefined} none
+ * @calls: renderStudentOnDom, calculateGradeAverage, renderGradeAverage
  */
 function updateStudentList(array) {
 	$("tbody").empty();
@@ -196,7 +202,7 @@ function updateStudentList(array) {
 /***************************************************************************************************
  * calculateGradeAverage - loop through the global student array and calculate average grade and return that value
  * @param: {array} students the array of student objects
- * @returns {number}
+ * @returns: {number}
  */
 function calculateGradeAverage(array) {
 	var number = 0;
@@ -213,18 +219,28 @@ function calculateGradeAverage(array) {
 }
 /***************************************************************************************************
  * renderGradeAverage - updates the on-page grade average
- * @param: {number} average    the grade average
- * @returns {undefined} none
+ * @param: {number} average the grade average
+ * @returns: {undefined} none
  */
 function renderGradeAverage(number) {
 	$(".avgGrade").text(number);
 }
-
+/***************************************************************************************************
+ * handleGetDataClicked - clears the student array and updates the array
+ * @param {undefined} none
+ * @returns {undefined} none
+ * @calls getStudentData
+ */
 function handleGetDataClicked() {
 	student_array = [];
 	getStudentData();
 }
-
+/***************************************************************************************************
+ * getStudentData - Ajax call that populates the student_array upon success.
+ * @param {undefined} none
+ * @returns {undefined} none
+ * @calls: updateStudentList
+ */
 function getStudentData() {
 	var ajaxConfig = {
 		dataType: "json",
@@ -240,7 +256,12 @@ function getStudentData() {
 	};
 	$.ajax(ajaxConfig);
 }
-
+/***************************************************************************************************
+ * addStudentData - Ajax call that adds the student to the database and renders onto DOM.
+ * @param: {student} object
+ * @returns: {undefined} none
+ * @calls: updateStudentList
+ */
 function addStudentData(student) {
 	var ajaxConfig = {
 		dataType: "json",
@@ -290,7 +311,6 @@ function deleteStudentData(student, element) {
 function deleteStudentSuccess(element, response) {
 	if (response.success === true) {
 		element.remove();
-		console.log(response.success);
 	} else {
 		$(".error-message").text(response.errors[0]);
 		$("#error-modal").modal("show");
