@@ -39,6 +39,7 @@ function addClickHandlersToElements() {
 	$(".add").on("click", addStudent);
 	$(".cancel").on("click", handleCancelClick);
 	$(".retrieve").on("click", handleGetDataClicked);
+	$(".sort").on("click", handleSortClicked);
 }
 /***************************************************************************************************
  * handleAddClicked - Event Handler when user clicks the add button
@@ -57,6 +58,85 @@ function handleAddClicked() {
  */
 function handleCancelClick() {
 	clearAddStudentFormInputs();
+}
+/***************************************************************************************************
+ * handleSortClicked - Event Handler when user clicks on dropdown sort selection, will sort and update student_array
+ * @param: {undefined} none
+ * @returns: {student_array}
+ * @calls: updateStudentList
+ */
+function handleSortClicked() {
+	var sortMethod = $(this).attr("sort");
+	switch (sortMethod) {
+		case "a-z":
+			if ($(this).attr("name") === "name") {
+				student_array.sort(function(a, b) {
+					var nameA = a.name.toLowerCase();
+					var nameB = b.name.toLowerCase();
+					if (nameA < nameB) {
+						return -1;
+					}
+					if (nameA > nameB) {
+						return 1;
+					}
+					return 0;
+				});
+			} else {
+				student_array.sort(function(a, b) {
+					var courseA = a.course.toLowerCase();
+					var courseB = b.course.toLowerCase();
+					if (courseA < courseB) {
+						return -1;
+					}
+					if (courseA > courseB) {
+						return 1;
+					}
+					return 0;
+				});
+			}
+			updateStudentList(student_array);
+			break;
+		case "z-a":
+			if ($(this).attr("name") === "name") {
+				student_array.sort(function(a, b) {
+					var nameA = a.name.toLowerCase();
+					var nameB = b.name.toLowerCase();
+					if (nameA > nameB) {
+						return -1;
+					}
+					if (nameA < nameB) {
+						return 1;
+					}
+					return 0;
+				});
+			} else {
+				student_array.sort(function(a, b) {
+					var courseA = a.course.toLowerCase();
+					var courseB = b.course.toLowerCase();
+					if (courseA > courseB) {
+						return -1;
+					}
+					if (courseA < courseB) {
+						return 1;
+					}
+					return 0;
+				});
+			}
+			updateStudentList(student_array);
+			break;
+		case "0-9":
+			student_array.sort(function(a, b) {
+				return a.grade - b.grade;
+			});
+			updateStudentList(student_array);
+			break;
+		case "9-0":
+			student_array.sort(function(a, b) {
+				return b.grade - a.grade;
+			});
+			updateStudentList(student_array);
+			break;
+	}
 }
 /***************************************************************************************************
  * handleFormInputs - Event Handler that checks input fields to ensure valid entry
@@ -108,7 +188,6 @@ function addStudent() {
 	var studentName = $("#studentName").val();
 	var studentCourse = $("#studentCourse").val();
 	var isValid = true;
-
 	if (studentName.length < 2 || studentName === "") {
 		$(".student-name").addClass("has-error");
 		$(".student-icon").popover("show");
@@ -289,7 +368,11 @@ function addStudentData(student) {
 	};
 	$.ajax(ajaxConfig);
 }
-
+/***************************************************************************************************
+ * deleteStudentData - Ajax call that adds the student to the database and renders onto DOM.
+ * @param: {student, element} object
+ * @returns: {undefined} none
+ */
 function deleteStudentData(student, element) {
 	var ajaxConfig = {
 		dataType: "json",
@@ -306,8 +389,11 @@ function deleteStudentData(student, element) {
 	};
 	$.ajax(ajaxConfig);
 }
-
-// Function deletes student from DOM element upon success response from server.
+/***************************************************************************************************
+ * deleteStudentSuccess - Function that checks to see if Ajax call function is successful.
+ * @param: {element, response} object
+ * @returns: {undefined} none
+ */
 function deleteStudentSuccess(element, response) {
 	if (response.success === true) {
 		element.remove();
