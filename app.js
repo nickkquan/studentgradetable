@@ -16,10 +16,9 @@ const connection = mysql.createConnection(config);
 
 connection.connect(function(err) {
 	if (err) {
-		console.log("Yo we broke", err.stack);
+		console.log("Oops, the server broke.", err.stack);
 	}
-
-	console.log("Yo we work", connection.threadId);
+	console.log("I'm in. Server is working.", connection.threadId);
 });
 
 app.use(express.json());
@@ -35,7 +34,7 @@ app.get("/students/get", (req, res) => {
 	let inserts = ["students"];
 
 	let query = mysql.format(sql, inserts);
-	console.log("this is the query", query);
+	console.log("This is the query ", query);
 
 	connection.query(query, function(err, results) {
 		if (err) throw err;
@@ -56,7 +55,7 @@ app.post("/students/create", (req, res) => {
 	let inserts = ["students", "name", "course", "grade", name, course, grade];
 
 	let query = mysql.format(sql, inserts);
-	console.log("this is the query", query);
+	console.log("This is the query ", query);
 
 	connection.query(query, function(err, results) {
 		if (err) throw err;
@@ -81,7 +80,7 @@ app.post("/students/delete", (req, res) => {
 	let inserts = ["students", "student_id", student_id];
 
 	let query = mysql.format(sql, inserts);
-	console.log("this is the query", query);
+	console.log("This is the query ", query);
 
 	connection.query(query, function(err, results) {
 		if (err) throw err;
@@ -95,5 +94,5 @@ app.post("/students/delete", (req, res) => {
 });
 
 app.listen(PORT, () => {
-	console.log("Check it, our server started on PORT", PORT);
+	console.log("Battlecruiser (Server) operational on PORT", PORT);
 });
