@@ -4,13 +4,7 @@ const mysql = require("mysql");
 
 const app = express();
 const PORT = process.env.PORT || 9000;
-const config = {
-	user: "root",
-	password: "root",
-	host: "localhost",
-	port: 3306,
-	database: "SGT"
-};
+const config = require("./config/credentials");
 
 const connection = mysql.createConnection(config);
 
