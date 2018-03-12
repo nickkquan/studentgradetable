@@ -9,7 +9,7 @@ $dbname = "DB NAME";
 
 $connection = new mysqli($servername, $username, $password, $dbname);
 
-if ($conn->connect_error) {
+if ($connection->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
@@ -32,7 +32,7 @@ $reinsertSQL = "INSERT INTO `students` (`student_id`, `name`, `course`, `grade`)
 (30, 'Christina', 'Geometry', 88),
 (31, 'Rachel', 'Physics', 92),
 (32, 'Robert', 'Earth Sciences', 77),
-(33, 'K', 'Algebra II', 84);";
+(33, 'Keith', 'Algebra II', 84);";
 $reinsertResult = $connection->query($reinsertSQL);
 
 $connection->close();
