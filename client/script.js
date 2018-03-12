@@ -29,6 +29,7 @@ function initializeApp() {
 	addClickHandlersToElements();
 	getStudentData();
 	handleFormInputs();
+	removePopover();
 }
 /***************************************************************************************************
  * addClickHandlerstoElements
@@ -58,6 +59,14 @@ function handleAddClicked() {
  */
 function handleCancelClick() {
 	clearAddStudentFormInputs();
+}
+/***************************************************************************************************
+ * removePopover - Event handler that hides popover if mouse leaves student form element
+ * @param: {undefined} none
+ * @returns: {undefined} none
+ */
+function removePopover() {
+	$(".student-add-form").mouseleave(() => $(".student-icon, .course-icon, .grade-icon").popover("hide"));
 }
 /***************************************************************************************************
  * handleSortClicked - Event Handler when user clicks on dropdown sort selection, will sort and update student_array
@@ -142,11 +151,16 @@ function handleSortClicked() {
  * handleFormInputs - Event Handler that checks input fields to ensure valid entry
  * @param: {undefined} none
  * @returns: {undefined} none
+ * @calls: checkFormEntry
  */
 function handleFormInputs() {
 	$("#studentName, #studentCourse, #studentGrade").keyup(checkFormEntry);
 }
-
+/***************************************************************************************************
+ * checkFormEntry - Function that checks each fields to ensure input is valid. Provides UX feedback
+ * @param: {undefined} none
+ * @returns: {undefined} none
+ */
 function checkFormEntry() {
 	if ($("#studentName").val().length < 2) {
 		$(".student-name").addClass("has-error");
