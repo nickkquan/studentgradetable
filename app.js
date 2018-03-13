@@ -86,7 +86,7 @@ app.post("/students/delete", (req, res) => {
 		res.json(output);
 	});
 });
-
+ 
 app.listen(PORT, () => {
 	console.log("Battlecruiser (Server) operational on PORT", PORT);
 });

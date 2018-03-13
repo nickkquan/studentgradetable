@@ -180,7 +180,11 @@ function checkFormEntry() {
 		$(".course-icon").popover("hide");
 	}
 
-	if ($("#studentGrade").val() === "" || isNaN($("#studentGrade").val())) {
+	if (
+		$("#studentGrade").val() === "" ||
+		$("#studentGrade").val().toString().length > 3 ||
+		isNaN($("#studentGrade").val()) 
+	) {
 		$(".student-grade").addClass("has-error");
 		$(".grade-icon").popover("show");
 	} else {
@@ -224,7 +228,7 @@ function addStudent() {
 		studentObject.course = studentCourse;
 	}
 
-	if (isNaN(studentGrade) || studentGrade === "" || studentGrade < 0 || studentGrade > 100) {
+	if (isNaN(studentGrade) || studentGrade === "" || studentGrade > 0 || studentGrade < 100) {
 		$(".student-grade").addClass("has-error");
 		$(".grade-icon").popover("show");
 		isValid = false;
