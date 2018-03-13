@@ -182,7 +182,7 @@ function checkFormEntry() {
 
 	if (
 		$("#studentGrade").val() === "" ||
-		$("#studentGrade").val().toString().length > 3 ||
+		$("#studentGrade").val() > 100 ||
 		isNaN($("#studentGrade").val()) 
 	) {
 		$(".student-grade").addClass("has-error");
