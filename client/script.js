@@ -179,7 +179,6 @@ function checkFormEntry() {
 		$(".student-course").addClass("has-success");
 		$(".course-icon").popover("hide");
 	}
-
 	if (
 		$("#studentGrade").val() === "" ||
 		$("#studentGrade").val() > 100 ||
@@ -228,7 +227,7 @@ function addStudent() {
 		studentObject.course = studentCourse;
 	}
 
-	if (isNaN(studentGrade) || studentGrade === "" || studentGrade > 0 || studentGrade < 100) {
+	if (isNaN(studentGrade) || studentGrade === "" || studentGrade < 0 || studentGrade > 100) {
 		$(".student-grade").addClass("has-error");
 		$(".grade-icon").popover("show");
 		isValid = false;
@@ -240,7 +239,6 @@ function addStudent() {
 	}
 
 	if (isValid) {
-		// student_array.push(studentObject);
 		addStudentData(studentObject);
 		updateStudentList(student_array);
 		clearAddStudentFormInputs();
