@@ -179,11 +179,7 @@ function checkFormEntry() {
 		$(".student-course").addClass("has-success");
 		$(".course-icon").popover("hide");
 	}
-	if (
-		$("#studentGrade").val() === "" ||
-		$("#studentGrade").val() > 100 ||
-		isNaN($("#studentGrade").val()) 
-	) {
+	if ($("#studentGrade").val() === "" || $("#studentGrade").val() > 100 || isNaN($("#studentGrade").val())) {
 		$(".student-grade").addClass("has-error");
 		$(".grade-icon").popover("show");
 	} else {
@@ -239,6 +235,7 @@ function addStudent() {
 	}
 
 	if (isValid) {
+		$(".add").attr("disabled", true);
 		addStudentData(studentObject);
 		updateStudentList(student_array);
 		clearAddStudentFormInputs();
@@ -282,6 +279,7 @@ function updateStudentList(array) {
 						student_array.splice(student, 1);
 						deleteStudentData(student, parentRow);
 						renderGradeAverage(calculateGradeAverage(array));
+						$(".delete").attr("disabled", true);
 					}
 				}
 			});
@@ -371,6 +369,7 @@ function addStudentData(student) {
 				student.id = response.new_id;
 				student_array.push(student);
 				updateStudentList(student_array);
+				$(".add").attr("disabled", false);
 			} else {
 				$(".error-message").text(response.error[0]);
 				$("#error-modal").modal("show");
@@ -405,13 +404,14 @@ function deleteStudentData(student, element) {
 	$.ajax(ajaxConfig);
 }
 /***************************************************************************************************
- * deleteStudentSuccess - Function that checks to see if Ajax call function is successful.
+ * deleteStudentSuccess - Function that checks to see if delete Ajax call function is successful.
  * @param: {element, response} object
  * @returns: {undefined} none
  */
 function deleteStudentSuccess(element, response) {
 	if (response.success === true) {
 		element.remove();
+		$(".delete").attr("disabled", false);
 	} else {
 		$(".error-message").text(response.errors[0]);
 		$("#error-modal").modal("show");
