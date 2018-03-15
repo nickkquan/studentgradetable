@@ -259,11 +259,11 @@ function clearAddStudentFormInputs() {
  * @returns: {undefined} none
  * @calls: renderStudentOnDom, calculateGradeAverage, renderGradeAverage
  */
-function updateStudentList(array) {
+function updateStudentList(studentArray) {
 	$("tbody").empty();
-	for (var arrayIndex = 0; arrayIndex < array.length; arrayIndex++) {
+	for (var arrayIndex = 0; arrayIndex < studentArray.length; arrayIndex++) {
 		(function() {
-			var student = array[arrayIndex];
+			var student = studentArray[arrayIndex];
 			var newRow = $("<tr>").attr("id", student.id);
 			var name = $("<td>").text(student.name);
 			var course = $("<td>").text(student.course);
@@ -274,22 +274,32 @@ function updateStudentList(array) {
 				class: "delete btn btn-danger btn-sm",
 				text: "Delete",
 				on: {
-					click: function() {
-						var parentRow = $(this).parents("tr");
-						student_array.splice(student, 1);
-						deleteStudentData(student, parentRow);
-						renderGradeAverage(calculateGradeAverage(array));
-						$(".delete").attr("disabled", true);
-					}
+					click: (function(studentRow) {
+						return function() {
+							deleteStudent(studentRow);
+						};
+					})(newRow)
 				}
 			});
+
+			function deleteStudent(parentRow) {
+				showDeleteModal(student);
+				$("#confirm-delete").on("click", function() {
+					student_array.splice(student, 1);
+					deleteStudentData(student, parentRow);
+					renderGradeAverage(calculateGradeAverage(studentArray));
+					$("#delete-modal").modal("hide");
+					$("#confirm-delete").attr("disabled", true);
+				});
+			}
+
 			var button = $("<td>").append(deleteButton);
 			newRow.append(name, course, grade, button);
 			$("tbody").append(newRow);
 			$(".student-grade").removeClass("has-success has-error");
 		})();
 	}
-	renderGradeAverage(calculateGradeAverage(array));
+	renderGradeAverage(calculateGradeAverage(studentArray));
 }
 /***************************************************************************************************
  * calculateGradeAverage - loop through the global student array and calculate average grade and return that value
@@ -411,9 +421,26 @@ function deleteStudentData(student, element) {
 function deleteStudentSuccess(element, response) {
 	if (response.success === true) {
 		element.remove();
-		$(".delete").attr("disabled", false);
+		$("#confirm-delete").attr("disabled", false);
 	} else {
 		$(".error-message").text(response.errors[0]);
 		$("#error-modal").modal("show");
 	}
+}
+/***************************************************************************************************
+ * showDeleteModal - Function that will invoke the delete student confirmation modal.
+ * @param: {student} object
+ * @returns: {undefined} none
+ */
+function showDeleteModal(student) {
+	$("#delete-modal").modal("show");
+	$(".modal-student-name")
+		.empty()
+		.text("Name: " + student.name);
+	$(".modal-student-course")
+		.empty()
+		.text("Course: " + student.course);
+	$(".modal-student-grade")
+		.empty()
+		.text("Grade: " + student.grade);
 }
