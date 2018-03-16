@@ -58,7 +58,11 @@
                 </div>
             </div>
             <div>
-                <button type="button" class="add btn btn-success btn-block">Add</button>
+                <button type="button" class="add btn btn-success btn-block" id="add">
+                    Add
+                    <span class="loading"></span>
+                </button>
+
                 <button type="button" class="cancel btn btn-default btn-block">Cancel</button>
             </div>
         </div>
@@ -175,8 +179,11 @@
                     <p class="modal-student-grade"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="confirm-delete" class="btn btn-success">Confirm</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="confirm-delete" class="btn btn-success">
+                        Confirm
+                        <span class="loading"></span>
+                    </button>
+                    <button type="button" class="cancel btn btn-default" data-dismiss="modal" id="cancel">Cancel</button>
                 </div>
             </div>
         </div>
