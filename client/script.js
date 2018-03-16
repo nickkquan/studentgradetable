@@ -430,8 +430,8 @@ function deleteStudentSuccess(element, response) {
 		element.remove();
 		$("#confirm-delete").attr("disabled", false);
 		setTimeout(() => {
-			removeLoadIcon($("#delete"));
-		}, 1000);
+			removeLoadIcon($("#confirm-delete"));
+		}, 250);
 	} else {
 		$(".error-message").text(response.errors[0]);
 		$("#error-modal").modal("show");
@@ -458,11 +458,11 @@ function showDeleteModal(student) {
 function addLoadIcon(button) {
 	$(button)
 		.children("span")
-		.addClass("glyphicon glyphicon-refresh");
+		.addClass("glyphicon glyphicon-refresh spinAnimation");
 }
 
 function removeLoadIcon(button) {
 	$(button)
 		.children("span")
-		.removeClass("glyphicon glyphicon-refresh");
+		.removeClass("glyphicon glyphicon-refresh spinAnimation");
 }
