@@ -236,6 +236,7 @@ function addStudent() {
 
 	if (isValid) {
 		$(".add").attr("disabled", true);
+		addLoadIcon($("#add"));
 		addStudentData(studentObject);
 		updateStudentList(student_array);
 		clearAddStudentFormInputs();
@@ -272,6 +273,7 @@ function updateStudentList(studentArray) {
 			var deleteButton = $("<button>", {
 				type: "button",
 				class: "delete btn btn-danger btn-sm",
+				id: "delete",
 				text: "Delete",
 				on: {
 					click: (function(studentRow) {
@@ -287,9 +289,11 @@ function updateStudentList(studentArray) {
 				$("#confirm-delete").on("click", function() {
 					student_array.splice(student, 1);
 					deleteStudentData(student, parentRow);
+					addLoadIcon("#confirm-delete");
 					renderGradeAverage(calculateGradeAverage(studentArray));
-					$("#delete-modal").modal("hide");
-					$("#confirm-delete").attr("disabled", true);
+					setTimeout(() => {
+						$("#delete-modal").modal("hide");
+					}, 500);
 				});
 			}
 
@@ -379,7 +383,10 @@ function addStudentData(student) {
 				student.id = response.new_id;
 				student_array.push(student);
 				updateStudentList(student_array);
-				$(".add").attr("disabled", false);
+				$("#add").attr("disabled", false);
+				setTimeout(() => {
+					removeLoadIcon($("#add"));
+				}, 250);
 			} else {
 				$(".error-message").text(response.error[0]);
 				$("#error-modal").modal("show");
@@ -393,7 +400,7 @@ function addStudentData(student) {
 	$.ajax(ajaxConfig);
 }
 /***************************************************************************************************
- * deleteStudentData - Ajax call that adds the student to the database and renders onto DOM.
+ * deleteStudentData - Ajax call that deletes the student to the database and removes from DOM.
  * @param: {student, element} object
  * @returns: {undefined} none
  */
@@ -422,6 +429,9 @@ function deleteStudentSuccess(element, response) {
 	if (response.success === true) {
 		element.remove();
 		$("#confirm-delete").attr("disabled", false);
+		setTimeout(() => {
+			removeLoadIcon($("#delete"));
+		}, 1000);
 	} else {
 		$(".error-message").text(response.errors[0]);
 		$("#error-modal").modal("show");
@@ -443,4 +453,16 @@ function showDeleteModal(student) {
 	$(".modal-student-grade")
 		.empty()
 		.text("Grade: " + student.grade);
+}
+
+function addLoadIcon(button) {
+	$(button)
+		.children("span")
+		.addClass("glyphicon glyphicon-refresh");
+}
+
+function removeLoadIcon(button) {
+	$(button)
+		.children("span")
+		.removeClass("glyphicon glyphicon-refresh");
 }
