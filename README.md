@@ -22,7 +22,7 @@
 *   PHP
 *   HTML5
 *   CSS3
-*   Bootstrap
+*   Bootstrap 3
 
 ## Tools Used
 
